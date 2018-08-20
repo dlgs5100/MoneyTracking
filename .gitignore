@@ -253,9 +253,6 @@ paket-files/
 .idea/
 *.sln.iml
 
-# Upload .exe
-!*.exe
-
 # CodeRush
 .cr/
 
@@ -268,3 +265,4 @@ __pycache__/
 
 # Ignore the default SQLite database.
 /db/*.sqlite3
+*.db
