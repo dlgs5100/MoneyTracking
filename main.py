@@ -1,25 +1,20 @@
-import repository.database as db
 import sys
-from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.uic import loadUi
-
-class MainWindow(QtWidgets.QMainWindow):
-    def __init__(self):
-        super(MainWindow,self).__init__()
-        loadUi('main.ui', self)
-        self.ButtonDepositeAndBudget.clicked.connect(self.openSettingPage)
-    def openSettingPage(self):
-        self.settingPage = SettingWindow() 
-        self.settingPage.show()
-
-class SettingWindow(QtWidgets.QDialog):
-    def __init__(self):
-        super(SettingWindow,self).__init__()
-        loadUi('setting.ui', self)
+from PyQt5 import QtWidgets
+import controller.MainWindow as MainWindow
+import sqlite3
+import repository.database as db
 
 if __name__ == "__main__":
-    # db = db.database()
+    db = db.database()
     app = QtWidgets.QApplication(sys.argv)
-    window = MainWindow()
+    window = MainWindow.MainWindow()
     window.show()
     sys.exit(app.exec_())
+
+    # conn = sqlite3.connect('dbmoneytracking.db')
+    # cursor = conn.cursor()
+    # sqlTruncateTable = "DROP TABLE Deposit"
+    # cursor.execute(sqlTruncateTable)
+    # cursor.close()
+    # conn.commit()
+    # conn.close()

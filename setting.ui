@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
-    <height>300</height>
+    <width>467</width>
+    <height>501</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -16,8 +16,8 @@
   <widget class="QDialogButtonBox" name="buttonBox">
    <property name="geometry">
     <rect>
-     <x>-40</x>
-     <y>250</y>
+     <x>0</x>
+     <y>450</y>
      <width>341</width>
      <height>32</height>
     </rect>
@@ -33,43 +33,123 @@
    <property name="geometry">
     <rect>
      <x>40</x>
-     <y>20</y>
-     <width>331</width>
-     <height>211</height>
+     <y>110</y>
+     <width>381</width>
+     <height>147</height>
     </rect>
    </property>
-   <layout class="QGridLayout" name="gridLayout_2">
-    <item row="0" column="1">
-     <widget class="QLineEdit" name="editDeposit_2"/>
-    </item>
+   <layout class="QGridLayout" name="gridLayout">
     <item row="2" column="1">
-     <widget class="QLineEdit" name="editMonthlyBudget_2"/>
-    </item>
-    <item row="2" column="0">
-     <widget class="QLabel" name="labelMonthlyBudget_2">
+     <widget class="QLineEdit" name="editMonthlyBudget">
       <property name="text">
-       <string>月預算:</string>
+       <string>0</string>
       </property>
      </widget>
     </item>
-    <item row="3" column="0">
-     <widget class="QLabel" name="labelFoodBudget_2">
+    <item row="0" column="1">
+     <widget class="QLineEdit" name="editDeposit">
       <property name="text">
-       <string>食預算:</string>
+       <string>0</string>
       </property>
      </widget>
     </item>
     <item row="0" column="0">
-     <widget class="QLabel" name="labelDeposit_2">
+     <widget class="QLabel" name="labelDeposit">
       <property name="text">
        <string>總存款:</string>
       </property>
      </widget>
     </item>
-    <item row="3" column="1">
-     <widget class="QLineEdit" name="editFoodBudget_2"/>
+    <item row="2" column="0">
+     <widget class="QLabel" name="labelMonthlyBudget">
+      <property name="text">
+       <string>月預算:</string>
+      </property>
+     </widget>
     </item>
    </layout>
+  </widget>
+  <widget class="QLabel" name="labelYear">
+   <property name="geometry">
+    <rect>
+     <x>140</x>
+     <y>40</y>
+     <width>31</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>0</string>
+   </property>
+  </widget>
+  <widget class="QComboBox" name="comboBoxMonth">
+   <property name="geometry">
+    <rect>
+     <x>260</x>
+     <y>40</y>
+     <width>61</width>
+     <height>31</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QTableWidget" name="tableBudget">
+   <property name="geometry">
+    <rect>
+     <x>40</x>
+     <y>260</y>
+     <width>301</width>
+     <height>181</height>
+    </rect>
+   </property>
+   <column>
+    <property name="text">
+     <string>項目</string>
+    </property>
+   </column>
+   <column>
+    <property name="text">
+     <string>預算</string>
+    </property>
+   </column>
+  </widget>
+  <widget class="QPushButton" name="buttonInsertRow">
+   <property name="geometry">
+    <rect>
+     <x>350</x>
+     <y>330</y>
+     <width>71</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>新增欄位</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="labelWordYear">
+   <property name="geometry">
+    <rect>
+     <x>200</x>
+     <y>40</y>
+     <width>21</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>年</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="labelWordMonth">
+   <property name="geometry">
+    <rect>
+     <x>340</x>
+     <y>40</y>
+     <width>21</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>月</string>
+   </property>
   </widget>
  </widget>
  <resources/>

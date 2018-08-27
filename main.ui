@@ -68,7 +68,7 @@
      </item>
     </layout>
    </widget>
-   <widget class="QPushButton" name="ButtonNewRecord">
+   <widget class="QPushButton" name="buttonNewRecord">
     <property name="geometry">
      <rect>
       <x>410</x>
@@ -81,7 +81,7 @@
      <string>新紀錄</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="ButtonMonthlyReport">
+   <widget class="QPushButton" name="buttonMonthlyReport">
     <property name="geometry">
      <rect>
       <x>160</x>
@@ -120,7 +120,7 @@
      <string>加入過去剩餘</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="ButtonDepositeAndBudget">
+   <widget class="QPushButton" name="buttonDepositeAndBudget">
     <property name="geometry">
      <rect>
       <x>510</x>

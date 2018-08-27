@@ -6,7 +6,6 @@ class database:
         cursor = conn.cursor()
         sqlCreateTableDeposit = "CREATE TABLE if not exists Deposit ( \
             id INTEGER PRIMARY KEY AUTOINCREMENT, \
-            position VARCHAR(20) NOT NULL, \
             lastUpdate DATE NOT NULL, \
             deposit INTEGER NOT NULL)"
         sqlCreateTableBudget = "CREATE TABLE if not exists Budget ( \
@@ -27,12 +26,12 @@ class database:
         conn.commit()
         conn.close()
     
-    def insertTableDeposit(self, position, lastUpdate, deposit):
+    def insertTableDeposit(self, lastUpdate, deposit):
         conn = sqlite3.connect('dbmoneytracking.db')
         cursor = conn.cursor()
-        sqlInsertTableDeposit = "INSERT INTO Deposit (position, lastUpdate, deposit) \
-                                VALUES (?, ?, ?)"
-        cursor.execute(sqlInsertTableDeposit, (position, lastUpdate, deposit))
+        sqlInsertTableDeposit = "INSERT INTO Deposit (lastUpdate, deposit) \
+                                VALUES (?, ?)"
+        cursor.execute(sqlInsertTableDeposit, (lastUpdate, deposit))
         cursor.close()
         conn.commit()
         conn.close()
