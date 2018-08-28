@@ -7,7 +7,9 @@ class SettingDialog(QtWidgets.QDialog):
     def __init__(self):
         super(SettingDialog,self).__init__()
         loadUi('setting.ui', self)
-
+        self.initUI()
+    
+    def initUI(self):
         self.labelYear.setText(str(datetime.datetime.now().year))
         for i in range (1,13):
             if i < 10:
@@ -17,12 +19,22 @@ class SettingDialog(QtWidgets.QDialog):
         self.buttonInsertRow.clicked.connect(self.listenerInsertRow)
         self.buttonBox.accepted.connect(self.listenerAccept)
 
-        # self.comboBoxMonth.activated[str].connect(self.onActivated)
-    
     def listenerInsertRow(self):
         rowPosition = self.tableBudget.rowCount()
         self.tableBudget.insertRow(rowPosition)
-        
-    # def onActivated(self, text):
-    #     self.lb1.setText(text)
-    #     self.lb1.adjustSize()
+
+    def listenerAccept(self):
+        dbO = db.database()
+
+        lastUpdate = datetime.datetime.now().strftime("%Y-%m-%d")
+        deposit = int(self.editDeposit.text())
+        dbO.insertTableDeposit(lastUpdate, deposit)
+
+        mmyyyy = str(datetime.datetime.now().year) + '-' + str(self.comboBoxMonth.currentText())
+        monthlyBudget = int(self.editMonthlyBudget.text())
+        dbO.insertTableBudget(mmyyyy, '月預算', monthlyBudget)
+
+        for row in range (0, self.tableBudget.rowCount()):
+            type = self.tableBudget.item(row,0).text()
+            budget = self.tableBudget.item(row,1).text()
+            dbO.insertTableBudget(mmyyyy, type, budget)
