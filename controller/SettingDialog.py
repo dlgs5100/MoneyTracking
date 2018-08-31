@@ -26,7 +26,7 @@ class SettingDialog(QtWidgets.QDialog):
     def listenerAccept(self):
         dbO = db.database()
 
-        lastUpdate = datetime.datetime.now().strftime("%Y-%m-%d")
+        lastUpdate = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         deposit = int(self.editDeposit.text())
         dbO.insertTableDeposit(lastUpdate, deposit)
 

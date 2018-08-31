@@ -59,44 +59,63 @@ class database:
     def getTotalDeposit(self):
         conn = sqlite3.connect('dbmoneytracking.db')
         cursor = conn.cursor()
-        sqlSelectTableDeposit = "SELECT deposit FROM Deposit"
-        result = cursor.execute(sqlSelectTableDeposit)
+        sqlSelectTableDeposit = "SELECT deposit, lastUpdate FROM Deposit ORDER BY lastUpdate DESC limit 1"
+        cursor.execute(sqlSelectTableDeposit)
 
-        total = 0
-        for row in result:
-            total += row[0]
-        return total
+        result = cursor.fetchone()
+        if result is None:
+            return 0, '1991-01-01 00-00-00'
+        else:
+            return result[0], result[1]
 
-    def getTypeBudgetAndSpending(self, mmyyyy, type):
+    def getTypeBudget(self, mmyyyy, type):
         conn = sqlite3.connect('dbmoneytracking.db')
         cursor = conn.cursor()
         sqlSelectTableBudget = "SELECT budget From Budget \
                                 WHERE mmyyyy = ? \
                                 AND type = ?"
+        cursor.execute(sqlSelectTableBudget, (mmyyyy, type, ))
+
+        result = cursor.fetchone()
+        if result is None:
+            return 0
+        else:
+            return result[0]
+
+    def getTypeSpending(self, mmyyyy, type):
+        conn = sqlite3.connect('dbmoneytracking.db')
+        cursor = conn.cursor()
         sqlSelectTableSpending = "SELECT cost FROM Spending \
                                 WHERE strftime('%Y-%m', date) = ? \
                                 AND type = ?"
 
-        result = cursor.execute(sqlSelectTableBudget, (mmyyyy, type, ))
-        for row in result:
-            MonthlyBudget = row[0]
-
         result = cursor.execute(sqlSelectTableSpending, (mmyyyy, type, ))
-        MonthlySpending = 0
+        total = 0
         for row in result:
-            MonthlySpending += row[0]
+            total += row[0]
 
-        cursor.close()
-        conn.commit()
-        conn.close()
+        return total
 
-        return MonthlyBudget, MonthlySpending
+    def getTotalSpending(self, mmyyyy):
+        conn = sqlite3.connect('dbmoneytracking.db')
+        cursor = conn.cursor()
+        sqlSelectTableSpending = "SELECT cost FROM Spending \
+                                WHERE strftime('%Y-%m', date) = ?"
+        result = cursor.execute(sqlSelectTableSpending, (mmyyyy, ))
 
+        total = 0
+        for row in result:
+            total += row[0]
+
+        return total
+        
     def truncateTable(self, tableName):
         conn = sqlite3.connect('dbmoneytracking.db')
         cursor = conn.cursor()
         sqlTruncateTable = "DELETE FROM {tableName}".format(tableName = tableName)
+        sqlUpdateTable = "UPDATE sqlite_sequence SET seq = 0 WHERE name = ?"
         cursor.execute(sqlTruncateTable)
+        cursor.execute(sqlUpdateTable, (tableName, ))
         cursor.close()
         conn.commit()
         conn.close()
