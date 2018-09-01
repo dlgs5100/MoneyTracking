@@ -1,6 +1,6 @@
-import datetime
 from PyQt5 import QtWidgets, QtGui
 from PyQt5.uic import loadUi
+import datetime
 import repository.database as db
 
 class SettingDialog(QtWidgets.QDialog):
@@ -10,12 +10,16 @@ class SettingDialog(QtWidgets.QDialog):
         self.initUI()
     
     def initUI(self):
+        dbO = db.database()
+
         self.labelYear.setText(str(datetime.datetime.now().year))
         for i in range (1,13):
             if i < 10:
                 self.comboBoxMonth.addItem('0' + str(i))
             else:
                 self.comboBoxMonth.addItem(str(i))
+        deposit, temp = dbO.getTotalDeposit()
+        self.editDeposit.setText(str(deposit))
         self.buttonInsertRow.clicked.connect(self.listenerInsertRow)
         self.buttonBox.accepted.connect(self.listenerAccept)
 

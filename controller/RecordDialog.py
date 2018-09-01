@@ -1,5 +1,6 @@
 from PyQt5 import QtWidgets, QtGui
 from PyQt5.uic import loadUi
+import datetime
 import repository.database as db
 
 class RecordDialog(QtWidgets.QDialog):
@@ -12,8 +13,6 @@ class RecordDialog(QtWidgets.QDialog):
         self.updateComboboxType()
         self.updateComboboxItem()
         self.buttonBox.accepted.connect(self.listenerAccept)
-        # dbO.insertTableSpending('2018-08-31', '食物', '早餐', 50)
-        # dbO.insertTableSpending('2018-08-31', '交通', '公車', 15)
 
     def updateComboboxType(self):
         dbO = db.database()
@@ -30,6 +29,13 @@ class RecordDialog(QtWidgets.QDialog):
     
     def listenerAccept(self):
         dbO = db.database()
-        # # self.comboBoxType.currentText()
-        # print(dbO.getAllItemFromType())
+        date = self.calendarWidget.selectedDate().toPyDate()
+        type = self.comboBoxType.currentText()
+        item = self.comboBoxItem.currentText()
+        spending = int(self.editSpending.text())
+        dbO.insertTableSpending(date, type, item, spending)
+        
+        lastUpdate = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        deposit, temp = dbO.getTotalDeposit()
+        dbO.insertTableDeposit(lastUpdate, deposit-spending)
         

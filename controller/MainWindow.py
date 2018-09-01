@@ -15,11 +15,12 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def updateUI(self):
         dbO = db.database()
+        mmyyyy = datetime.datetime.now().strftime('%Y-%m')
         totalDeposit, lastUpdate = dbO.getTotalDeposit()
         self.labelUpdateTime.setText(lastUpdate)
         self.labelAutoTotal.setText(str(totalDeposit))
-        self.labelAutoMonthlyLast.setText(str(dbO.getTypeBudget('2018-08','月預算') - dbO.getTotalSpending('2018-08')))
-        self.labelAutoAvgDay.setText(str((dbO.getTypeBudget('2018-08','食物') - dbO.getTypeSpending('2018-08','食物'))/30))
+        self.labelAutoMonthlyLast.setText(str(dbO.getTypeBudget(mmyyyy,'月預算') - dbO.getTotalSpending(mmyyyy)))
+        self.labelAutoAvgDay.setText(str((dbO.getTypeBudget(mmyyyy,'食物') - dbO.getTypeSpending(mmyyyy,'食物'))/30))
 
     def openSettingPage(self):
         self.settingPage = SettingDialog.SettingDialog() 

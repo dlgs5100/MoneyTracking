@@ -59,7 +59,7 @@
     </rect>
    </property>
   </widget>
-  <widget class="QLineEdit" name="lineEditSpending">
+  <widget class="QLineEdit" name="editSpending">
    <property name="geometry">
     <rect>
      <x>320</x>
