@@ -1,14 +1,16 @@
 from PyQt5 import QtWidgets
 from PyQt5.uic import loadUi
 import datetime
-import controller.SettingDialog as SettingDialog
 import repository.database as db
+import controller.SettingDialog as SettingDialog
+import controller.RecordDialog as RecordDialog
 
 class MainWindow(QtWidgets.QMainWindow):
     def __init__(self):
         super(MainWindow,self).__init__()
         loadUi('main.ui', self)
         self.buttonDepositeAndBudget.clicked.connect(self.openSettingPage)
+        self.buttonNewRecord.clicked.connect(self.openRecordPage)
         self.updateUI()
 
     def updateUI(self):
@@ -22,4 +24,9 @@ class MainWindow(QtWidgets.QMainWindow):
     def openSettingPage(self):
         self.settingPage = SettingDialog.SettingDialog() 
         self.settingPage.exec_()
+        self.updateUI()
+
+    def openRecordPage(self):
+        self.recordPage = RecordDialog.RecordDialog() 
+        self.recordPage.exec_()
         self.updateUI()

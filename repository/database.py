@@ -108,6 +108,37 @@ class database:
             total += row[0]
 
         return total
+
+    def getAllType(self):
+        conn = sqlite3.connect('dbmoneytracking.db')
+        cursor = conn.cursor()
+        sqlSelectTableSpending = "SELECT DISTINCT type FROM Spending"
+        cursor.execute(sqlSelectTableSpending)
+
+        result = cursor.fetchall()
+        if result is None:
+            return 0
+        else:
+            list = []
+            for row in result:
+                list.append(row[0])
+            return list
+    
+    def getAllItemFromType(self, type):
+        conn = sqlite3.connect('dbmoneytracking.db')
+        cursor = conn.cursor()
+        sqlSelectTableSpending = "SELECT DISTINCT item FROM Spending \
+                                WHERE type = ?"
+        cursor.execute(sqlSelectTableSpending, (type, ))
+        result = cursor.fetchall()
+        if result is None:
+            return 0
+        else:
+            list = []
+            for row in result:
+                list.append(row[0])
+            return list
+
         
     def truncateTable(self, tableName):
         conn = sqlite3.connect('dbmoneytracking.db')
