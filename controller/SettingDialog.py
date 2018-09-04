@@ -36,9 +36,9 @@ class SettingDialog(QtWidgets.QDialog):
 
         mmyyyy = str(datetime.datetime.now().year) + '-' + str(self.comboBoxMonth.currentText())
         monthlyBudget = int(self.editMonthlyBudget.text())
-        dbO.insertTableBudget(mmyyyy, '月預算', monthlyBudget)
+        dbO.insertTableBudget(lastUpdate, mmyyyy, '月預算', monthlyBudget)
 
         for row in range (0, self.tableBudget.rowCount()):
             type = self.tableBudget.item(row,0).text()
             budget = self.tableBudget.item(row,1).text()
-            dbO.insertTableBudget(mmyyyy, type, budget)
+            dbO.insertTableBudget(lastUpdate, mmyyyy, type, budget)

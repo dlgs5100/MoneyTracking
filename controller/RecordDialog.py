@@ -29,13 +29,13 @@ class RecordDialog(QtWidgets.QDialog):
     
     def listenerAccept(self):
         dbO = db.database()
+        lastUpdate = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         date = self.calendarWidget.selectedDate().toPyDate()
         type = self.comboBoxType.currentText()
         item = self.comboBoxItem.currentText()
         spending = int(self.editSpending.text())
-        dbO.insertTableSpending(date, type, item, spending)
+        dbO.insertTableSpending(lastUpdate, date, type, item, spending)
         
-        lastUpdate = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         deposit, temp = dbO.getTotalDeposit()
         dbO.insertTableDeposit(lastUpdate, deposit-spending)
         

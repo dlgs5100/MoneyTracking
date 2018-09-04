@@ -10,11 +10,13 @@ class database:
             deposit INTEGER NOT NULL)"
         sqlCreateTableBudget = "CREATE TABLE if not exists Budget ( \
             id INTEGER PRIMARY KEY AUTOINCREMENT, \
+            lastUpdate DATE NOT NULL, \
             mmyyyy DATE NOT NULL, \
             type VARCHAR(20) NOT NULL, \
             budget INTEGER NOT NULL)"
         sqlCreateTableSpending = "CREATE TABLE if not exists Spending ( \
             id INTEGER PRIMARY KEY AUTOINCREMENT, \
+            lastUpdate DATE NOT NULL, \
             date DATE NOT NULL, \
             type VARCHAR(20) NOT NULL, \
             item VARCHAR(20) NOT NULL, \
@@ -36,22 +38,22 @@ class database:
         conn.commit()
         conn.close()
 
-    def insertTableBudget(self, mmyyyy, type, budget):
+    def insertTableBudget(self, lastUpdate, mmyyyy, type, budget):
         conn = sqlite3.connect('dbmoneytracking.db')
         cursor = conn.cursor()
-        sqlInsertTableBudget = "INSERT INTO Budget (mmyyyy, type, budget) \
-                                VALUES (?, ?, ?)"
-        cursor.execute(sqlInsertTableBudget, (mmyyyy, type, budget))
+        sqlInsertTableBudget = "INSERT INTO Budget (lastUpdate, mmyyyy, type, budget) \
+                                VALUES (?, ?, ?, ?)"
+        cursor.execute(sqlInsertTableBudget, (lastUpdate, mmyyyy, type, budget))
         cursor.close()
         conn.commit()
         conn.close()
 
-    def insertTableSpending(self, date, type, item, cost):
+    def insertTableSpending(self, lastUpdate, date, type, item, cost):
         conn = sqlite3.connect('dbmoneytracking.db')
         cursor = conn.cursor()
-        sqlInsertTableSpending = "INSERT INTO Spending (date, type, item, cost) \
-                                VALUES (?, ?, ?, ?)"
-        cursor.execute(sqlInsertTableSpending, (date, type, item, cost))
+        sqlInsertTableSpending = "INSERT INTO Spending (lastUpdate, date, type, item, cost) \
+                                VALUES (?, ?, ?, ?, ?)"
+        cursor.execute(sqlInsertTableSpending, (lastUpdate, date, type, item, cost))
         cursor.close()
         conn.commit()
         conn.close()
@@ -139,6 +141,38 @@ class database:
                 list.append(row[0])
             return list
 
+    def deleteLatestDeposit(self):
+        conn = sqlite3.connect('dbmoneytracking.db')
+        cursor = conn.cursor()
+        sqlDeleteTableDeposit = "DELETE FROM Deposit WHERE lastUpdate IN (SELECT lastUpdate FROM Deposit ORDER BY lastUpdate DESC limit 1)"
+        sqlUpdateTableDeposit = "UPDATE sqlite_sequence SET seq = seq-1 WHERE name = 'Deposit'"
+        cursor.execute(sqlDeleteTableDeposit)
+        cursor.execute(sqlUpdateTableDeposit)
+        cursor.close()
+        conn.commit()
+        conn.close()
+
+    def deleteLatestBudget(self):
+        conn = sqlite3.connect('dbmoneytracking.db')
+        cursor = conn.cursor()
+        sqlDeleteTableBudget = "DELETE FROM Budget WHERE lastUpdate IN (SELECT lastUpdate FROM Budget ORDER BY lastUpdate DESC limit 1)"
+        sqlUpdateTableBudget = "UPDATE sqlite_sequence SET seq = (SELECT id FROM Budget ORDER BY id DESC limit 1) WHERE name = 'Budget'"
+        cursor.execute(sqlDeleteTableBudget)
+        cursor.execute(sqlUpdateTableBudget)
+        cursor.close()
+        conn.commit()
+        conn.close()
+
+    def deleteLatestSpending(self):
+        conn = sqlite3.connect('dbmoneytracking.db')
+        cursor = conn.cursor()
+        sqlDeleteTableSpending = "DELETE FROM Spending WHERE lastUpdate IN (SELECT lastUpdate FROM Spending ORDER BY lastUpdate DESC limit 1)"
+        sqlUpdateTableSpending = "UPDATE sqlite_sequence SET seq = seq-1 WHERE name = 'Spending'"
+        cursor.execute(sqlDeleteTableSpending)
+        cursor.execute(sqlUpdateTableSpending)
+        cursor.close()
+        conn.commit()
+        conn.close()
         
     def truncateTable(self, tableName):
         conn = sqlite3.connect('dbmoneytracking.db')
