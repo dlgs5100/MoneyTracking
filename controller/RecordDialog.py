@@ -1,6 +1,7 @@
 from PyQt5 import QtWidgets, QtGui
 from PyQt5.uic import loadUi
 import datetime
+import controller.MessageDialog as MessageDialog
 import repository.database as db
 
 class RecordDialog(QtWidgets.QDialog):
@@ -38,4 +39,7 @@ class RecordDialog(QtWidgets.QDialog):
         
         deposit, temp = dbO.getTotalDeposit()
         dbO.insertTableDeposit(lastUpdate, deposit-spending)
+
+        self.messageDialog = MessageDialog.MessageDialog('新紀錄已存入資料庫')
+        self.messageDialog.exec_()
         

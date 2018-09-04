@@ -1,6 +1,7 @@
 from PyQt5 import QtWidgets, QtGui
 from PyQt5.uic import loadUi
 import datetime
+import controller.MessageDialog as MessageDialog
 import repository.database as db
 
 class SettingDialog(QtWidgets.QDialog):
@@ -42,3 +43,6 @@ class SettingDialog(QtWidgets.QDialog):
             type = self.tableBudget.item(row,0).text()
             budget = self.tableBudget.item(row,1).text()
             dbO.insertTableBudget(lastUpdate, mmyyyy, type, budget)
+        
+        self.messageDialog = MessageDialog.MessageDialog('存款/預算已存入資料庫')
+        self.messageDialog.exec_()

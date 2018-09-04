@@ -1,9 +1,11 @@
 from PyQt5 import QtWidgets
 from PyQt5.uic import loadUi
 import datetime
+import calendar
 import repository.database as db
 import controller.SettingDialog as SettingDialog
 import controller.RecordDialog as RecordDialog
+import controller.MessageDialog as MessageDialog
 
 class MainWindow(QtWidgets.QMainWindow):
     listCurrentBehavior = []
@@ -22,15 +24,18 @@ class MainWindow(QtWidgets.QMainWindow):
         totalDeposit, lastUpdate = dbO.getTotalDeposit()
         self.labelUpdateTime.setText(lastUpdate)
         self.labelAutoTotal.setText(str(totalDeposit))
-        self.labelAutoMonthlyLast.setText(str(dbO.getTypeBudget(mmyyyy,'月預算') - dbO.getTotalSpending(mmyyyy)))
-        self.labelAutoAvgDay.setText(str((dbO.getTypeBudget(mmyyyy,'食物') - dbO.getTypeSpending(mmyyyy,'食物'))/30))
+        self.labelAutoMonthlyLast.setText(str(dbO.getTypeBudget(mmyyyy,'月預算')-dbO.getTotalSpending(mmyyyy)))
+        totalDays = calendar.mdays[int(datetime.datetime.now().strftime('%m'))]
+        nowDay = int(datetime.datetime.now().strftime('%d'))
+        perDayEat = (dbO.getTypeBudget(mmyyyy,'食物')-dbO.getTypeSpending(mmyyyy,'食物')) / (totalDays-nowDay)
+        self.labelAutoAvgDay.setText(str(round(perDayEat,2)))
 
     def listenerOpenSettingPage(self):
         self.settingPage = SettingDialog.SettingDialog() 
         if self.settingPage.exec_() == 1:
             self.listCurrentBehavior.append(1)
         self.updateUI()
-        
+
     def listenerOpenRecordPage(self):
         self.recordPage = RecordDialog.RecordDialog() 
         if self.recordPage.exec_() == 1:
@@ -39,13 +44,21 @@ class MainWindow(QtWidgets.QMainWindow):
     
     def listenerPrevious(self):
         dbO = db.database()
-        latestBehavior = self.listCurrentBehavior.pop(len(self.listCurrentBehavior)-1)
-        if latestBehavior == 1:
-            dbO.deleteLatestDeposit()
-            dbO.deleteLatestBudget()
-        elif latestBehavior == 2:
-            dbO.deleteLatestDeposit()
-            dbO.deleteLatestSpending()
+        if len(self.listCurrentBehavior) != 0:
+            latestBehavior = self.listCurrentBehavior.pop(len(self.listCurrentBehavior)-1)
+            if latestBehavior == 1:
+                dbO.deleteLatestDeposit()
+                dbO.deleteLatestBudget()
+                message = '成功復原(存款/預算)'
+            elif latestBehavior == 2:
+                dbO.deleteLatestDeposit()
+                dbO.deleteLatestSpending()
+                message = '成功復原(新紀錄)'
+            else:
+                message = '復原產生未知的錯誤'
+            self.updateUI()
         else:
-            print('error')
-        self.updateUI()
+            message = '無法復原'
+        self.messageDialog = MessageDialog.MessageDialog(message)
+        self.messageDialog.exec_()
+    
