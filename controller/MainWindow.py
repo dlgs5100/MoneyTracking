@@ -2,10 +2,12 @@ from PyQt5 import QtWidgets
 from PyQt5.uic import loadUi
 import datetime
 import calendar
+import matplotlib.pyplot as plt
 import repository.database as db
 import controller.SettingDialog as SettingDialog
 import controller.RecordDialog as RecordDialog
 import controller.MessageDialog as MessageDialog
+import controller.PlotWindow as PlotWindow
 
 class MainWindow(QtWidgets.QMainWindow):
     listCurrentBehavior = []
@@ -16,6 +18,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.buttonDepositeAndBudget.clicked.connect(self.listenerOpenSettingPage)
         self.buttonNewRecord.clicked.connect(self.listenerOpenRecordPage)
         self.buttonPrevious.clicked.connect(self.listenerPrevious)
+        self.buttonMonthlyReport.clicked.connect(self.listenerOpenPieChart)
         self.updateUI()
 
     def updateUI(self):
@@ -62,3 +65,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.messageDialog = MessageDialog.MessageDialog(message)
         self.messageDialog.exec_()
     
+    def listenerOpenPieChart(self):
+        self.plotWindow = PlotWindow.PlotWindow()
+        self.plotWindow.show()
+        

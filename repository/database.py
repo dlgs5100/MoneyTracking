@@ -126,12 +126,57 @@ class database:
                 list.append(row[0])
             return list
     
+    def getAllTypeByMMYYY(self, mmyyyy):
+        conn = sqlite3.connect('dbmoneytracking.db')
+        cursor = conn.cursor()
+        sqlSelectTableSpending = "SELECT DISTINCT type FROM Spending\
+                                WHERE strftime('%Y-%m', date) = ?"
+        cursor.execute(sqlSelectTableSpending, (mmyyyy, ))
+
+        result = cursor.fetchall()
+        if result is None:
+            return 0
+        else:
+            list = []
+            for row in result:
+                list.append(row[0])
+            return list
+    
     def getAllItemFromType(self, type):
         conn = sqlite3.connect('dbmoneytracking.db')
         cursor = conn.cursor()
         sqlSelectTableSpending = "SELECT DISTINCT item FROM Spending \
                                 WHERE type = ?"
         cursor.execute(sqlSelectTableSpending, (type, ))
+        result = cursor.fetchall()
+        if result is None:
+            return 0
+        else:
+            list = []
+            for row in result:
+                list.append(row[0])
+            return list
+    
+    def getAllCostFromType(self, type, mmyyyy):
+        conn = sqlite3.connect('dbmoneytracking.db')
+        cursor = conn.cursor()
+        sqlSelectTableSpending = "SELECT cost FROM Spending \
+                                WHERE type = ? AND strftime('%Y-%m', date) = ?"
+        cursor.execute(sqlSelectTableSpending, (type, mmyyyy, ))
+        result = cursor.fetchall()
+        if result is None:
+            return 0
+        else:
+            total = 0
+            for row in result:
+                total += row[0]
+            return total
+    
+    def getAllYearsAndMonthInSpending(self):
+        conn = sqlite3.connect('dbmoneytracking.db')
+        cursor = conn.cursor()
+        sqlSelectTableSpending = "SELECT DISTINCT strftime('%Y-%m', date) FROM Spending"
+        cursor.execute(sqlSelectTableSpending)
         result = cursor.fetchall()
         if result is None:
             return 0
