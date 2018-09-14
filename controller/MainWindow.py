@@ -15,14 +15,14 @@ class MainWindow(QtWidgets.QMainWindow):
     def __init__(self):
         super(MainWindow,self).__init__()
         loadUi('main.ui', self)
-        self.buttonDepositeAndBudget.clicked.connect(self.listenerOpenSettingPage)
-        self.buttonNewRecord.clicked.connect(self.listenerOpenRecordPage)
-        self.buttonPrevious.clicked.connect(self.listenerPrevious)
-        self.buttonMonthlyReport.clicked.connect(self.listenerOpenPieChart)
-        self.updateUI()
-
-    def updateUI(self):
         dbO = db.database()
+        self.buttonDepositeAndBudget.clicked.connect(lambda: self.listenerOpenSettingPage(dbO))
+        self.buttonNewRecord.clicked.connect(lambda: self.listenerOpenRecordPage(dbO))
+        self.buttonPrevious.clicked.connect(lambda: self.listenerPrevious(dbO))
+        self.buttonMonthlyReport.clicked.connect(self.listenerOpenPieChart)
+        self.updateUI(dbO)
+
+    def updateUI(self, dbO):
         mmyyyy = datetime.datetime.now().strftime('%Y-%m')
         totalDeposit, lastUpdate = dbO.getTotalDeposit()
         self.labelUpdateTime.setText(lastUpdate)
@@ -33,20 +33,23 @@ class MainWindow(QtWidgets.QMainWindow):
         perDayEat = (dbO.getTypeBudget(mmyyyy,'食物')-dbO.getTypeSpending(mmyyyy,'食物')) / (totalDays-nowDay)
         self.labelAutoAvgDay.setText(str(round(perDayEat,2)))
 
-    def listenerOpenSettingPage(self):
+    def listenerOpenSettingPage(self, dbO):
         self.settingPage = SettingDialog.SettingDialog() 
         if self.settingPage.exec_() == 1:
             self.listCurrentBehavior.append(1)
-        self.updateUI()
+        self.updateUI(dbO)
 
-    def listenerOpenRecordPage(self):
+    def listenerOpenRecordPage(self, dbO):
         self.recordPage = RecordDialog.RecordDialog() 
         if self.recordPage.exec_() == 1:
             self.listCurrentBehavior.append(2)
-        self.updateUI()
+        self.updateUI(dbO)
     
-    def listenerPrevious(self):
-        dbO = db.database()
+    def listenerOpenPieChart(self):
+        self.plotWindow = PlotWindow.PlotWindow()
+        self.plotWindow.show()
+    
+    def listenerPrevious(self, dbO):
         if len(self.listCurrentBehavior) != 0:
             latestBehavior = self.listCurrentBehavior.pop(len(self.listCurrentBehavior)-1)
             if latestBehavior == 1:
@@ -59,13 +62,9 @@ class MainWindow(QtWidgets.QMainWindow):
                 message = '成功復原(新紀錄)'
             else:
                 message = '復原產生未知的錯誤'
-            self.updateUI()
+            self.updateUI(dbO)
         else:
             message = '無法復原'
         self.messageDialog = MessageDialog.MessageDialog(message)
         self.messageDialog.exec_()
-    
-    def listenerOpenPieChart(self):
-        self.plotWindow = PlotWindow.PlotWindow()
-        self.plotWindow.show()
         

@@ -74,8 +74,7 @@ class database:
         conn = sqlite3.connect('dbmoneytracking.db')
         cursor = conn.cursor()
         sqlSelectTableBudget = "SELECT budget From Budget \
-                                WHERE mmyyyy = ? \
-                                AND type = ?"
+                                WHERE mmyyyy = ? AND type = ? ORDER BY lastUpdate DESC limit 1"
         cursor.execute(sqlSelectTableBudget, (mmyyyy, type, ))
 
         result = cursor.fetchone()
@@ -185,6 +184,18 @@ class database:
             for row in result:
                 list.append(row[0])
             return list
+    
+    def getLatestRecordDate(self):
+        conn = sqlite3.connect('dbmoneytracking.db')
+        cursor = conn.cursor()
+        sqlSelectTableSpending = "SELECT date FROM Spending ORDER BY date DESC limit 1"
+        cursor.execute(sqlSelectTableSpending)
+
+        result = cursor.fetchone()
+        if result is None:
+            return 0
+        else:
+            return result[0]
 
     def deleteLatestDeposit(self):
         conn = sqlite3.connect('dbmoneytracking.db')

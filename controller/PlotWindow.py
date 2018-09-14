@@ -8,25 +8,24 @@ class PlotWindow(QtWidgets.QMainWindow):
     def __init__(self):
         super(PlotWindow,self).__init__()
         loadUi('plot.ui', self)
-        self.initUI()
+        dbO = db.database()
+        self.initUI(dbO)
 
-    def initUI(self):
-        self.updateCombox()
+    def initUI(self, dbO):
+        self.updateCombox(dbO)
 
         self.figure = plt.figure()
         self.canvas = FigureCanvas(self.figure)
-        self.buttonShow.clicked.connect(self.listenerShow)
+        self.buttonShow.clicked.connect(lambda: self.listenerShow(dbO))
         self.verticalLayout.addWidget(self.canvas)
 
-    def updateCombox(self):
-        dbO = db.database()
+    def updateCombox(self, dbO):
         self.comboBoxMMYYYY.setEditable(False)
         self.comboBoxMMYYYY.addItems(dbO.getAllYearsAndMonthInSpending())
 
-    def listenerShow(self):
+    def listenerShow(self, dbO):
         plt.clf()
 
-        dbO = db.database()
         mmyyyy = self.comboBoxMMYYYY.currentText()
         listType = dbO.getAllTypeByMMYYY(mmyyyy)
 

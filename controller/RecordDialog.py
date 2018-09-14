@@ -8,28 +8,26 @@ class RecordDialog(QtWidgets.QDialog):
     def __init__(self):
         super(RecordDialog,self).__init__()
         loadUi('record.ui', self)
-        self.initUI()
-    
-    def initUI(self):
-        self.updateComboboxType()
-        self.updateComboboxItem()
-        self.buttonBox.accepted.connect(self.listenerAccept)
-
-    def updateComboboxType(self):
         dbO = db.database()
+        self.initUI(dbO)
+    
+    def initUI(self, dbO):
+        self.updateComboboxType(dbO)
+        self.updateComboboxItem(dbO)
+        self.buttonBox.accepted.connect(lambda: self.listenerAccept(dbO))
+
+    def updateComboboxType(self, dbO):
         self.comboBoxType.setEditable(True)
         self.comboBoxType.addItems(dbO.getAllType())
-        self.comboBoxType.currentIndexChanged.connect(self.updateComboboxItem)
+        self.comboBoxType.currentIndexChanged.connect(lambda: self.updateComboboxItem(dbO))
 
-    def updateComboboxItem(self):
-        dbO = db.database()
+    def updateComboboxItem(self, dbO):
         itemChosed = self.comboBoxType.currentText()
         self.comboBoxItem.setEditable(True)
         self.comboBoxItem.clear()
         self.comboBoxItem.addItems(dbO.getAllItemFromType(itemChosed))
     
-    def listenerAccept(self):
-        dbO = db.database()
+    def listenerAccept(self, dbO):
         lastUpdate = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         date = self.calendarWidget.selectedDate().toPyDate()
         type = self.comboBoxType.currentText()
