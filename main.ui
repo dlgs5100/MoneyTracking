@@ -24,10 +24,38 @@
      </rect>
     </property>
     <layout class="QGridLayout" name="gridLayout">
+     <item row="3" column="1">
+      <widget class="QLabel" name="labelAutoAvgDay">
+       <property name="text">
+        <string>0</string>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="0">
+      <widget class="QLabel" name="labelAvgDay">
+       <property name="text">
+        <string>日均餐費:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1">
+      <widget class="QLabel" name="labelAutoMonthlyLast">
+       <property name="text">
+        <string>0</string>
+       </property>
+      </widget>
+     </item>
      <item row="0" column="0">
       <widget class="QLabel" name="labelTotal">
        <property name="text">
         <string>總剩餘:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="0">
+      <widget class="QLabel" name="labelPerMonth">
+       <property name="text">
+        <string>當月預算剩餘:</string>
        </property>
       </widget>
      </item>
@@ -39,28 +67,14 @@
       </widget>
      </item>
      <item row="2" column="0">
-      <widget class="QLabel" name="labelAvgDay">
+      <widget class="QLabel" name="labelIncome">
        <property name="text">
-        <string>日均餐費:</string>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="0">
-      <widget class="QLabel" name="labelPerMonth">
-       <property name="text">
-        <string>月剩餘:</string>
+        <string>當月收入:</string>
        </property>
       </widget>
      </item>
      <item row="2" column="1">
-      <widget class="QLabel" name="labelAutoAvgDay">
-       <property name="text">
-        <string>0</string>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="1">
-      <widget class="QLabel" name="labelAutoMonthlyLast">
+      <widget class="QLabel" name="labelAutoMonthlyIncome">
        <property name="text">
         <string>0</string>
        </property>

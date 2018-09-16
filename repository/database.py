@@ -21,9 +21,18 @@ class database:
             type VARCHAR(20) NOT NULL, \
             item VARCHAR(20) NOT NULL, \
             cost INTEGER NOT NULL)"
+        sqlCreateTableIncome = "CREATE TABLE if not exists Income ( \
+            id INTEGER PRIMARY KEY AUTOINCREMENT, \
+            lastUpdate DATE NOT NULL, \
+            date DATE NOT NULL, \
+            type VARCHAR(20) NOT NULL, \
+            item VARCHAR(20) NOT NULL, \
+            income INTEGER NOT NULL)"
+        
         cursor.execute(sqlCreateTableDeposit)
         cursor.execute(sqlCreateTableBudget)
         cursor.execute(sqlCreateTableSpending)
+        cursor.execute(sqlCreateTableIncome)
         cursor.close()
         conn.commit()
         conn.close()
@@ -54,6 +63,16 @@ class database:
         sqlInsertTableSpending = "INSERT INTO Spending (lastUpdate, date, type, item, cost) \
                                 VALUES (?, ?, ?, ?, ?)"
         cursor.execute(sqlInsertTableSpending, (lastUpdate, date, type, item, cost))
+        cursor.close()
+        conn.commit()
+        conn.close()
+
+    def insertTableIncome(self, lastUpdate, date, type, item, income):
+        conn = sqlite3.connect('dbmoneytracking.db')
+        cursor = conn.cursor()
+        sqlInsertTableIncome = "INSERT INTO Income (lastUpdate, date, type, item, income) \
+                                VALUES (?, ?, ?, ?, ?)"
+        cursor.execute(sqlInsertTableIncome, (lastUpdate, date, type, item, income))
         cursor.close()
         conn.commit()
         conn.close()
@@ -110,11 +129,39 @@ class database:
 
         return total
 
-    def getAllType(self):
+    def getTotalIncome(self, mmyyyy):
+        conn = sqlite3.connect('dbmoneytracking.db')
+        cursor = conn.cursor()
+        sqlSelectTableIncome = "SELECT income FROM Income \
+                                WHERE strftime('%Y-%m', date) = ?"
+        result = cursor.execute(sqlSelectTableIncome, (mmyyyy, ))
+
+        total = 0
+        for row in result:
+            total += row[0]
+
+        return total
+
+    def getAllTypeFromSpending(self):
         conn = sqlite3.connect('dbmoneytracking.db')
         cursor = conn.cursor()
         sqlSelectTableSpending = "SELECT DISTINCT type FROM Spending"
         cursor.execute(sqlSelectTableSpending)
+
+        result = cursor.fetchall()
+        if result is None:
+            return 0
+        else:
+            list = []
+            for row in result:
+                list.append(row[0])
+            return list
+    
+    def getAllTypeFromIncome(self):
+        conn = sqlite3.connect('dbmoneytracking.db')
+        cursor = conn.cursor()
+        sqlSelectTableIncome = "SELECT DISTINCT type FROM Income"
+        cursor.execute(sqlSelectTableIncome)
 
         result = cursor.fetchall()
         if result is None:
@@ -141,12 +188,27 @@ class database:
                 list.append(row[0])
             return list
     
-    def getAllItemFromType(self, type):
+    def getAllItemByTypeFromSpending(self, type):
         conn = sqlite3.connect('dbmoneytracking.db')
         cursor = conn.cursor()
         sqlSelectTableSpending = "SELECT DISTINCT item FROM Spending \
                                 WHERE type = ?"
         cursor.execute(sqlSelectTableSpending, (type, ))
+        result = cursor.fetchall()
+        if result is None:
+            return 0
+        else:
+            list = []
+            for row in result:
+                list.append(row[0])
+            return list
+
+    def getAllItemByTypeFromIncome(self, type):
+        conn = sqlite3.connect('dbmoneytracking.db')
+        cursor = conn.cursor()
+        sqlSelectTableIncome = "SELECT DISTINCT item FROM Income \
+                                WHERE type = ?"
+        cursor.execute(sqlSelectTableIncome, (type, ))
         result = cursor.fetchall()
         if result is None:
             return 0

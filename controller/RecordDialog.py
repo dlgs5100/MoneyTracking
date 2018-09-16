@@ -1,4 +1,4 @@
-from PyQt5 import QtWidgets, QtGui
+from PyQt5 import QtWidgets
 from PyQt5.uic import loadUi
 import datetime
 import controller.MessageDialog as MessageDialog
@@ -12,31 +12,47 @@ class RecordDialog(QtWidgets.QDialog):
         self.initUI(dbO)
     
     def initUI(self, dbO):
+        self.checkBoxIncome.stateChanged.connect(lambda: self.changeCBIncome(dbO))
         self.updateComboboxType(dbO)
         self.updateComboboxItem(dbO)
         self.buttonBox.accepted.connect(lambda: self.listenerAccept(dbO))
+    
+    def changeCBIncome(self, dbO):   #@不確定要不要放兩個
+        self.updateComboboxType(dbO)
+        self.updateComboboxItem(dbO)
 
     def updateComboboxType(self, dbO):
         self.comboBoxType.setEditable(True)
-        self.comboBoxType.addItems(dbO.getAllType())
+        self.comboBoxType.clear()
+        if self.checkBoxIncome.isChecked():
+            self.comboBoxType.addItems(dbO.getAllTypeFromIncome())
+        else:
+            self.comboBoxType.addItems(dbO.getAllTypeFromSpending())
         self.comboBoxType.currentIndexChanged.connect(lambda: self.updateComboboxItem(dbO))
 
     def updateComboboxItem(self, dbO):
-        itemChosed = self.comboBoxType.currentText()
+        typeChosed = self.comboBoxType.currentText()
         self.comboBoxItem.setEditable(True)
         self.comboBoxItem.clear()
-        self.comboBoxItem.addItems(dbO.getAllItemFromType(itemChosed))
+        if self.checkBoxIncome.isChecked():
+            self.comboBoxItem.addItems(dbO.getAllItemByTypeFromIncome(typeChosed))
+        else:
+            self.comboBoxItem.addItems(dbO.getAllItemByTypeFromSpending(typeChosed))
     
     def listenerAccept(self, dbO):
         lastUpdate = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         date = self.calendarWidget.selectedDate().toPyDate()
         type = self.comboBoxType.currentText()
         item = self.comboBoxItem.currentText()
-        spending = int(self.editSpending.text())
-        dbO.insertTableSpending(lastUpdate, date, type, item, spending)
-        
+        money = int(self.editMoney.text())
+
         deposit, temp = dbO.getTotalDeposit()
-        dbO.insertTableDeposit(lastUpdate, deposit-spending)
+        if self.checkBoxIncome.isChecked(): #@
+            dbO.insertTableIncome(lastUpdate, date, type, item, money)
+            dbO.insertTableDeposit(lastUpdate, deposit+money)
+        else:
+            dbO.insertTableSpending(lastUpdate, date, type, item, money)
+            dbO.insertTableDeposit(lastUpdate, deposit-money)
 
         self.messageDialog = MessageDialog.MessageDialog('新紀錄已存入資料庫')
         self.messageDialog.exec_()

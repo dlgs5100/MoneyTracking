@@ -28,6 +28,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.labelUpdateTime.setText(lastUpdate)
         self.labelAutoTotal.setText(str(totalDeposit))
         self.labelAutoMonthlyLast.setText(str(dbO.getTypeBudget(mmyyyy,'月預算')-dbO.getTotalSpending(mmyyyy)))
+        self.labelAutoMonthlyIncome.setText(str(dbO.getTotalIncome(mmyyyy)))
         totalDays = calendar.mdays[int(datetime.datetime.now().strftime('%m'))]
         nowDay = int(datetime.datetime.now().strftime('%d'))
         perDayEat = (dbO.getTypeBudget(mmyyyy,'食物')-dbO.getTypeSpending(mmyyyy,'食物')) / (totalDays-nowDay)

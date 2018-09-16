@@ -1,4 +1,4 @@
-from PyQt5 import QtWidgets, QtGui
+from PyQt5 import QtWidgets
 from PyQt5.uic import loadUi
 import datetime
 import controller.MessageDialog as MessageDialog
