@@ -13,11 +13,13 @@ class PlotWindow(QtWidgets.QMainWindow):
 
     def initUI(self, dbO):
         self.updateCombox(dbO)
+        self.buttonShow.clicked.connect(lambda: self.listenerShow(dbO))
 
         self.figure = plt.figure()
-        self.canvas = FigureCanvas(self.figure)
-        self.buttonShow.clicked.connect(lambda: self.listenerShow(dbO))
-        self.verticalLayout.addWidget(self.canvas)
+        self.canvasSpending = FigureCanvas(self.figure)
+        self.canvasIncome = FigureCanvas(self.figure)
+        self.VLayoutSpending.addWidget(self.canvasSpending)
+        self.VLayoutIncome.addWidget(self.canvasIncome)
 
     def updateCombox(self, dbO):
         self.comboBoxMMYYYY.setEditable(False)
@@ -27,16 +29,38 @@ class PlotWindow(QtWidgets.QMainWindow):
         plt.clf()
 
         mmyyyy = self.comboBoxMMYYYY.currentText()
-        listType = dbO.getAllTypeByMMYYY(mmyyyy)
+        listType = dbO.getAllTypeByMMYYYFromSpending(mmyyyy)
 
         listCost = []
+        i = 0
         for type in listType:
-            listCost.append(dbO.getAllCostFromType(type, mmyyyy))
+            listCost.append(dbO.getAllCostByTypeFromSpending(type, mmyyyy))
+            listType[i] += ' ' + str(+listCost[i])
+            i+=1
         
         plt.rcParams['font.family']='DFKai-SB'
         plt.rcParams['axes.unicode_minus']=False
         plt.pie(listCost , labels = listType, autopct='%1.1f%%')
         plt.axis('equal')
+
+        self.canvasSpending.draw()
+
+        ###
+
+        plt.clf()
+
+        listType = dbO.getAllTypeByMMYYYFromIncome(mmyyyy)
+        listCost = []
+        i = 0
+        for type in listType:
+            listCost.append(dbO.getAllCostByTypeFromIncome(type, mmyyyy))
+            listType[i] += ' ' + str(+listCost[i])
+            i+=1
+    
+        plt.rcParams['font.family']='DFKai-SB'
+        plt.rcParams['axes.unicode_minus']=False
+        plt.pie(listCost , labels = listType, autopct='%1.1f%%')
+        plt.axis('equal')
         
-        self.canvas.draw()
+        self.canvasIncome.draw()
         

@@ -172,12 +172,28 @@ class database:
                 list.append(row[0])
             return list
     
-    def getAllTypeByMMYYY(self, mmyyyy):
+    def getAllTypeByMMYYYFromSpending(self, mmyyyy):
         conn = sqlite3.connect('dbmoneytracking.db')
         cursor = conn.cursor()
         sqlSelectTableSpending = "SELECT DISTINCT type FROM Spending\
                                 WHERE strftime('%Y-%m', date) = ?"
         cursor.execute(sqlSelectTableSpending, (mmyyyy, ))
+
+        result = cursor.fetchall()
+        if result is None:
+            return 0
+        else:
+            list = []
+            for row in result:
+                list.append(row[0])
+            return list
+    
+    def getAllTypeByMMYYYFromIncome(self, mmyyyy):
+        conn = sqlite3.connect('dbmoneytracking.db')
+        cursor = conn.cursor()
+        sqlSelectTableIncome = "SELECT DISTINCT type FROM Income\
+                                WHERE strftime('%Y-%m', date) = ?"
+        cursor.execute(sqlSelectTableIncome, (mmyyyy, ))
 
         result = cursor.fetchall()
         if result is None:
@@ -218,12 +234,27 @@ class database:
                 list.append(row[0])
             return list
     
-    def getAllCostFromType(self, type, mmyyyy):
+    def getAllCostByTypeFromSpending(self, type, mmyyyy):
         conn = sqlite3.connect('dbmoneytracking.db')
         cursor = conn.cursor()
         sqlSelectTableSpending = "SELECT cost FROM Spending \
                                 WHERE type = ? AND strftime('%Y-%m', date) = ?"
         cursor.execute(sqlSelectTableSpending, (type, mmyyyy, ))
+        result = cursor.fetchall()
+        if result is None:
+            return 0
+        else:
+            total = 0
+            for row in result:
+                total += row[0]
+            return total
+
+    def getAllCostByTypeFromIncome(self, type, mmyyyy):
+        conn = sqlite3.connect('dbmoneytracking.db')
+        cursor = conn.cursor()
+        sqlSelectTableIncome = "SELECT income FROM Income \
+                                WHERE type = ? AND strftime('%Y-%m', date) = ?"
+        cursor.execute(sqlSelectTableIncome, (type, mmyyyy, ))
         result = cursor.fetchall()
         if result is None:
             return 0
