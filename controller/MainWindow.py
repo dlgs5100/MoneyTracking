@@ -43,7 +43,10 @@ class MainWindow(QtWidgets.QMainWindow):
     def listenerOpenRecordPage(self, dbO):
         self.recordPage = RecordDialog.RecordDialog() 
         if self.recordPage.exec_() == 1:
-            self.listCurrentBehavior.append(2)
+            if self.recordPage.recording['IncomeOrSpending'] == 'Spending':  
+                self.listCurrentBehavior.append(2)
+            elif self.recordPage.recording['IncomeOrSpending'] == 'Income': 
+                self.listCurrentBehavior.append(3)
         self.updateUI(dbO)
     
     def listenerOpenPieChart(self):
@@ -60,7 +63,11 @@ class MainWindow(QtWidgets.QMainWindow):
             elif latestBehavior == 2:
                 dbO.deleteLatestDeposit()
                 dbO.deleteLatestSpending()
-                message = '成功復原(新紀錄)'
+                message = '成功復原(新紀錄:支出)'
+            elif latestBehavior == 3:
+                dbO.deleteLatestDeposit()
+                dbO.deleteLatestIncome()
+                message = '成功復原(新紀錄:收入)'
             else:
                 message = '復原產生未知的錯誤'
             self.updateUI(dbO)

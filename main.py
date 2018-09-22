@@ -9,12 +9,15 @@ import controller.MainWindow as MainWindow
 import repository.database as db
 
 def Toast(dbO):
-    latestRecordDate = dbO.getLatestRecordDate()
-    if latestRecordDate != 0:
-        temp = datetime.datetime.strptime(latestRecordDate, "%Y-%m-%d")
+    spendingDate = dbO.getLatestSpendingDate()
+    incomeDate = dbO.getLatestIncomeDate()
+    Date = spendingDate if spendingDate >= incomeDate else incomeDate
+    
+    if Date != 0:
+        temp = datetime.datetime.strptime(Date, "%Y-%m-%d")
         nowDate = datetime.datetime.now()
         toaster = ToastNotifier()
-        toaster.show_toast('最後一次紀錄為 : ' + str((nowDate-temp).days)+'天前\n'+latestRecordDate)
+        toaster.show_toast('最後一次紀錄為 : ' + str((nowDate-temp).days)+'天前\n'+Date)
 
 if __name__ == "__main__":
     dbO = db.database()

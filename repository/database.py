@@ -278,11 +278,23 @@ class database:
                 list.append(row[0])
             return list
     
-    def getLatestRecordDate(self):
+    def getLatestSpendingDate(self):
         conn = sqlite3.connect('dbmoneytracking.db')
         cursor = conn.cursor()
         sqlSelectTableSpending = "SELECT date FROM Spending ORDER BY date DESC limit 1"
         cursor.execute(sqlSelectTableSpending)
+
+        result = cursor.fetchone()
+        if result is None:
+            return 0
+        else:
+            return result[0]
+
+    def getLatestIncomeDate(self):
+        conn = sqlite3.connect('dbmoneytracking.db')
+        cursor = conn.cursor()
+        sqlSelectTableIncome = "SELECT date FROM Income ORDER BY date DESC limit 1"
+        cursor.execute(sqlSelectTableIncome)
 
         result = cursor.fetchone()
         if result is None:
@@ -319,6 +331,17 @@ class database:
         sqlUpdateTableSpending = "UPDATE sqlite_sequence SET seq = seq-1 WHERE name = 'Spending'"
         cursor.execute(sqlDeleteTableSpending)
         cursor.execute(sqlUpdateTableSpending)
+        cursor.close()
+        conn.commit()
+        conn.close()
+
+    def deleteLatestIncome(self):
+        conn = sqlite3.connect('dbmoneytracking.db')
+        cursor = conn.cursor()
+        sqlDeleteTableIncome = "DELETE FROM Income WHERE lastUpdate IN (SELECT lastUpdate FROM Income ORDER BY lastUpdate DESC limit 1)"
+        sqlUpdateTableIncome = "UPDATE sqlite_sequence SET seq = seq-1 WHERE name = 'Income'"
+        cursor.execute(sqlDeleteTableIncome)
+        cursor.execute(sqlUpdateTableIncome)
         cursor.close()
         conn.commit()
         conn.close()

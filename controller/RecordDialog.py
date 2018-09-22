@@ -10,6 +10,7 @@ class RecordDialog(QtWidgets.QDialog):
         loadUi('record.ui', self)
         dbO = db.database()
         self.initUI(dbO)
+        self.recording = {}
     
     def initUI(self, dbO):
         self.checkBoxIncome.stateChanged.connect(lambda: self.changeCBIncome(dbO))
@@ -50,9 +51,11 @@ class RecordDialog(QtWidgets.QDialog):
         if self.checkBoxIncome.isChecked(): #@
             dbO.insertTableIncome(lastUpdate, date, type, item, money)
             dbO.insertTableDeposit(lastUpdate, deposit+money)
+            self.recording['IncomeOrSpending'] = 'Income'
         else:
             dbO.insertTableSpending(lastUpdate, date, type, item, money)
             dbO.insertTableDeposit(lastUpdate, deposit-money)
+            self.recording['IncomeOrSpending'] = 'Spending'
 
         self.messageDialog = MessageDialog.MessageDialog('新紀錄已存入資料庫')
         self.messageDialog.exec_()
