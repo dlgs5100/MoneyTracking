@@ -286,7 +286,7 @@ class database:
 
         result = cursor.fetchone()
         if result is None:
-            return 0
+            return '0'
         else:
             return result[0]
 
@@ -298,7 +298,7 @@ class database:
 
         result = cursor.fetchone()
         if result is None:
-            return 0
+            return '0'
         else:
             return result[0]
 

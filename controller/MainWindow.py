@@ -31,7 +31,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.labelAutoMonthlyIncome.setText(str(dbO.getTotalIncome(mmyyyy)))
         totalDays = calendar.mdays[int(datetime.datetime.now().strftime('%m'))]
         nowDay = int(datetime.datetime.now().strftime('%d'))
-        perDayEat = (dbO.getTypeBudget(mmyyyy,'食物')-dbO.getTypeSpending(mmyyyy,'食物')) / (totalDays-nowDay)
+        perDayEat = (dbO.getTypeBudget(mmyyyy,'食物')-dbO.getTypeSpending(mmyyyy,'食物')) / (totalDays-nowDay+1)
         self.labelAutoAvgDay.setText(str(round(perDayEat,2)))
 
     def listenerOpenSettingPage(self, dbO):
