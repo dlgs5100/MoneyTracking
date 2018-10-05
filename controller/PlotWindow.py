@@ -3,28 +3,29 @@ from PyQt5.uic import loadUi
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 import repository.database as db
+import controller.DetailDialog as DetailDialog
 
 class PlotWindow(QtWidgets.QMainWindow):
     def __init__(self):
         super(PlotWindow,self).__init__()
         loadUi('plot.ui', self)
         dbO = db.database()
+        self.mmyyyy = '0'
         self.initUI(dbO)
 
     def initUI(self, dbO):
         self.updateCombox(dbO)
 
         self.fig = plt.figure()
+        plt.subplots_adjust(wspace = 0.8, hspace = 0)
         self.ax1 = self.fig.add_subplot(1,2,1)
         self.ax2 = self.fig.add_subplot(1,2,2)
         self.ax1.axis('off')
         self.ax2.axis('off')
         self.plotCid = 0
 
-        self.canvasSpending = FigureCanvas(self.fig)
-        #    self.canvasIncome = FigureCanvas(self.fig)
-        self.VLayoutSpending.addWidget(self.canvasSpending)
-        #    self.VLayoutIncome.addWidget(self.canvasIncome)
+        self.canvas = FigureCanvas(self.fig)
+        self.VLayout.addWidget(self.canvas)
 
         self.buttonShow.clicked.connect(lambda: self.listenerShow(dbO))
 
@@ -37,7 +38,12 @@ class PlotWindow(QtWidgets.QMainWindow):
         def onclick(event):
             wedge = event.artist
             label = wedge.get_label()
-            print(label)
+            type = str(label).split(' ')[0]
+            if(str(label).split(' ')[2] == '.'):
+                self.detailPage = DetailDialog.DetailDialog(type, self.mmyyyy, 'spending')
+            else:
+                self.detailPage = DetailDialog.DetailDialog(type, self.mmyyyy, 'income')
+            self.detailPage.exec_()
 
         # Make wedges selectable
         for wedge1 in wedgesSpending:
@@ -46,20 +52,21 @@ class PlotWindow(QtWidgets.QMainWindow):
         for wedge2 in wedgesIncome:
             wedge2.set_picker(True)
 
-        self.plotCid = self.canvasSpending.mpl_connect('pick_event', onclick)
+        self.plotCid = self.canvas.mpl_connect('pick_event', onclick)
 
     def listenerShow(self, dbO):
         self.ax1.cla()
-        self.canvasSpending.mpl_disconnect(self.plotCid)
+        self.canvas.mpl_disconnect(self.plotCid)
 
-        mmyyyy = self.comboBoxMMYYYY.currentText()
-        listType = dbO.getAllTypeByMMYYYFromSpending(mmyyyy)
+        self.mmyyyy = self.comboBoxMMYYYY.currentText()
+        listType = dbO.getAllTypeByMMYYYFromSpending(self.mmyyyy)
 
         listCost = []
         i = 0
         for type in listType:
-            listCost.append(dbO.getAllCostByTypeFromSpending(type, mmyyyy))
+            listCost.append(dbO.getAllCostByTypeFromSpending(type, self.mmyyyy))
             listType[i] += ' ' + str(+listCost[i])
+            listType[i] += ' ' + '.'
             i+=1
         
         plt.rcParams['font.family']='DFKai-SB'
@@ -69,12 +76,13 @@ class PlotWindow(QtWidgets.QMainWindow):
 
         # ###
 
-        listType = dbO.getAllTypeByMMYYYFromIncome(mmyyyy)
+        listType = dbO.getAllTypeByMMYYYFromIncome(self.mmyyyy)
         listCost = []
         i = 0
         for type in listType:
-            listCost.append(dbO.getAllCostByTypeFromIncome(type, mmyyyy))
+            listCost.append(dbO.getAllCostByTypeFromIncome(type, self.mmyyyy))
             listType[i] += ' ' + str(+listCost[i])
+            listType[i] += ' ' + ','
             i+=1
     
         plt.rcParams['font.family']='DFKai-SB'
@@ -83,4 +91,4 @@ class PlotWindow(QtWidgets.QMainWindow):
         self.ax2.axis('equal')
 
         self.make_picker(wedges1, wedges2)
-        self.canvasSpending.draw()
+        self.canvas.draw()

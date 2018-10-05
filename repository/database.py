@@ -302,6 +302,30 @@ class database:
         else:
             return result[0]
 
+    def getDetailByTypeFromSpending(self, type, mmyyyy):
+        conn = sqlite3.connect('dbmoneytracking.db')
+        cursor = conn.cursor()
+        sqlSelectTableSpending = "SELECT id, date, item, cost FROM Spending \
+                                WHERE type = ? AND strftime('%Y-%m', date) = ? ORDER BY date ASC"
+        cursor.execute(sqlSelectTableSpending, (type, mmyyyy, ))
+        result = cursor.fetchall()
+        if result is None:
+            return '0'
+        else:
+            return result
+    
+    def getDetailByTypeFromIncome(self, type, mmyyyy):
+        conn = sqlite3.connect('dbmoneytracking.db')
+        cursor = conn.cursor()
+        sqlSelectTableIncome = "SELECT id, date, item, income FROM Income \
+                                WHERE type = ? AND strftime('%Y-%m', date) = ? ORDER BY date ASC"
+        cursor.execute(sqlSelectTableIncome, (type, mmyyyy, ))
+        result = cursor.fetchall()
+        if result is None:
+            return '0'
+        else:
+            return result
+
     def deleteLatestDeposit(self):
         conn = sqlite3.connect('dbmoneytracking.db')
         cursor = conn.cursor()

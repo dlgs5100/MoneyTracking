@@ -42,22 +42,11 @@
      <rect>
       <x>30</x>
       <y>120</y>
-      <width>391</width>
+      <width>821</width>
       <height>341</height>
      </rect>
     </property>
-    <layout class="QVBoxLayout" name="VLayoutSpending"/>
-   </widget>
-   <widget class="QWidget" name="verticalLayoutWidget_2">
-    <property name="geometry">
-     <rect>
-      <x>460</x>
-      <y>120</y>
-      <width>391</width>
-      <height>341</height>
-     </rect>
-    </property>
-    <layout class="QVBoxLayout" name="VLayoutIncome"/>
+    <layout class="QVBoxLayout" name="VLayout"/>
    </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
