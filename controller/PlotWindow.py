@@ -56,6 +56,7 @@ class PlotWindow(QtWidgets.QMainWindow):
 
     def listenerShow(self, dbO):
         self.ax1.cla()
+        self.ax2.cla()
         self.canvas.mpl_disconnect(self.plotCid)
 
         self.mmyyyy = self.comboBoxMMYYYY.currentText()
